@@ -77,7 +77,7 @@ $$dC=(\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}+\frac{1}{
 
 By no arbitrage, a portfolio that combines option and shares into a delta neutral strategy should yield the risk free rate.
 
-- Hold one option and short $\Delta=\frac{\partial C}{\partial S} shares$.
+- Hold one option and short $\Delta=\frac{\partial C}{\partial S}$ shares.
 - The random ($dW_t$) terms cancel, leaving a riskless portfolio.
 
 4. **The Black-Scholes PDE**
