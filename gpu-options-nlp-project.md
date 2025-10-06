@@ -16,27 +16,97 @@ The integrated system combines risk-neutral pricing, ML-enhanced Greeks approxim
 
 **Keywords:** Options Pricing, GPU Computing, Machine Learning, NLP, Quantitative Finance, Portfolio Optimization
 
-## Core Components
+## Pricing Models
 
-### 1. Numerical Pricing Engines
-- **Black-Scholes Analytical:** Closed-form solutions for European options with full Greeks calculation
-- **Heston Monte Carlo:** Stochastic volatility simulation with Milstein discretization and variance reduction
-- **Finite Differences:** Crank-Nicolson PDE solver for American options and complex boundary conditions
-- **GPU Acceleration:** CUDA/Numba kernels for massive parallel Monte Carlo simulations
+### Black-Scholes Analytical: Closed-form solutions for European options with full Greeks calculation
 
-### 2. Machine Learning Surrogates
+The Black-Scholes model is a framework to price European options by assuming the underlying follows a geometric Brownian motion and valuing options under a risk-neutral measure via continuous delta hedging. 
+
+Understanding this requires several underlying concepts.
+
+1. **Geometric Brownian motion**
+
+The classic Black-Scholes model assumes:
+$$dS_t=\mu S_tdt + \sigma S_tdW_t$$
+where:
+- $dS_t$: instantaneous change in price at time $t$
+- $S_t$: asset price at time $t$
+- $\mu$: drift (annualized expected percentage change of asset)
+- $\sigma$: **constant** volatility (annualized std. dev. of returns)
+- $dW_t$: Brownian motion (random shock)
+
+Breaking down the SDE:
+- Drift term ($\mu S_tdt$): Multiplying $\mu$ by $dt$ gives the expected percentage change over the small time interval, and multiplying by $S_t$ scales it to the current price, so you get the expected absolute change in price $d_t$.
+- Random shock term ($\mu S_tdW_t$): $dW_t$ is the infinitesimal increment of Brownian motion, which has mean 0 and variance $dt$. In practice for a small time step $\Delta t$, $dW_t \approx \sqrt{\Delta t} \cdot Z$, where $Z$ is a standard normal random variable. Multiplying by $\sigma$ gives the normal random deviation in price in time $dt$ as this value equals $\sigma \cdot \sqrt{\Delta t} \cdot Z$. Multplying again by $S_t$ makes the random change proportional to the current price.
+- Combining both terms gives the relative percentage change in price with respect to Brownian motion changes.
+
+2. **Itô's Lemma: The Chain Rule for Stochastic Processes**
+
+For a function $C(S,t)$, it says:
+$$dC=\frac{\partial C}{\partial t}dt+\frac{\partial C}{\partial S}dS+\frac{1}{2}\frac{\partial^2C}{\partial S^2}(dS)^2$$
+where:
+- The first term is the change due to time.
+- The second term is the change due to asset movement.
+- The third term comes frmo the randomness in $dS$ and is unique to stochastic calculus.
+
+Substitute $dS_t=\mu S_tdt + \sigma S_tdW_t$ from the SDE:
+- The first term is just $\frac{\partial C}{\partial t}dt$.
+- The second term is $\frac{\partial C}{\partial S}(\mu Sdt+\sigma SdW)=\mu S\frac{\partial C}{\partial S}dt+\sigma S\frac{\partial C}{\partial S}dW$.
+- The third term is the key: $(dS)^2=(\mu Sdt+\sigma SdW)^2=(\mu Sdt)^2+2\mu Sdt\cdot\sigma SdW+(\sigma SdW)^2$.
+
+Recall the rules of Itô's calculus:
+- $(dt)^2=0$ since a small time walk squared is negligible
+- $dt\cdot dW=0$ since a small time walk multiplied by a small random brownian walk is negligible
+- $(dW)^2=dt$ since the squared of a brownian walk equals the time step - not negligible anymore!
+
+So:
+- $(\mu Sdt)^2=0$
+- $2\mu Sdt\cdot\sigma SdW=0$
+- $(\sigma SdW)^2=\sigma^2S^2(dW)^2=\sigma^2S^2dt$
+
+Therefore: $(dS)^2=\sigma^2S^2dt$
+
+Now, the third term becomes:
+$$\frac{1}{2}\frac{\partial^2C}{\partial S^2}(dS)^2=\frac{1}{2}\frac{\partial^2C}{\partial S^2}\sigma^2S^2dt$$
+So the full expansion is:
+$$dC=\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}dt+\sigma S\frac{\partial C}{\partial S}dW+\frac{1}{2}\sigma^2S^2\frac{\partial^2C}{\partial S^2}dt$$
+Or, grouping the $dt$ terms:
+$$dC=(\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}+\frac{1}{2}\sigma^2S^2\frac{\partial^2 C}{\partial S^2})\space dt+\sigma S\frac{\partial C}{\partial S} dW$$
+
+3. **Build a Riskless Portfolio (Delta Hedging)**
+
+By no arbitrage, a portfolio that combines option and shares into a delta neutral strategy should yield the risk free rate.
+
+- Hold one option and short $\Delta=\frac{\partial C}{\partial S} shares$.
+- The random ($dW_t$) terms cancel, leaving a riskless portfolio.
+
+4. **The Black-Scholes PDE**
+
+Setting the drift of the riskless portfolio equal to $r$ times its value gives the Black-Scholes **partial differential equation**:
+$$\frac{\partial C}{\partial t}+rS\frac{\partial C}{\partial S}+\frac{1}{2}\sigma^2S^2\frac{\partial^2C}{\partial S^2}=rC$$
+- $r$: risk free interest rate (assumed constant)
+- $\sigma$: constant volatility
+
+In layman terms, since the absolute growth of this option price should be equal to the risk free rate $\times$ price of option (no arbitrage rule), the $dt$ terms equal to $rC$.
+### Heston Monte Carlo: Stochastic volatility simulation with Milstein discretization and variance reduction
+
+### Finite Differences: Crank-Nicolson PDE solver for American options and complex boundary conditions
+
+### GPU Acceleration: CUDA/Numba kernels for massive parallel Monte Carlo simulations
+
+## Machine Learning Surrogates
 - **Neural Networks:** Deep feedforward networks for option price approximation across parameter grids
 - **Gradient Boosting:** LightGBM/XGBoost models for Greeks prediction with uncertainty quantification
 - **Feature Engineering:** Comprehensive market parameter transformations and regime indicators
 - **Model Selection:** Cross-validation and ensemble methods for robust predictions
 
-### 3. NLP Alpha Features
+## NLP Alpha Features
 - **Text Processing:** Financial domain preprocessing pipeline for earnings call transcripts
 - **Sentiment Analysis:** FinBERT-based sentiment scoring with uncertainty and forward-looking indicators
 - **Topic Modeling:** Latent themes extraction and financial keyword density analysis
 - **Predictive Modeling:** Time-series forecasting linking textual features to volatility changes
 
-### 4. Portfolio Integration
+## Portfolio Integration
 - **Risk Management:** Delta-gamma-vega hedging with transaction costs and turnover constraints
 - **Optimization:** Mean-variance and risk-parity frameworks with NLP-conditioned regimes
 - **Backtesting:** Walk-forward analysis with performance attribution and statistical significance testing
