@@ -47,7 +47,7 @@ $$dC=\frac{\partial C}{\partial t}dt+\frac{\partial C}{\partial S}dS+\frac{1}{2}
 where:
 - The first term is the change due to time.
 - The second term is the change due to asset movement.
-- The third term comes frmo the randomness in $dS$ and is unique to stochastic calculus.
+- The third term comes from the randomness in $dS$ and is unique to stochastic calculus.
 
 Substitute $dS_t=\mu S_tdt + \sigma S_tdW_t$ from the SDE:
 - The first term is just $\frac{\partial C}{\partial t}dt$.
@@ -71,7 +71,7 @@ $$\frac{1}{2}\frac{\partial^2C}{\partial S^2}(dS)^2=\frac{1}{2}\frac{\partial^2C
 So the full expansion is:\
 $$dC=\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}dt+\sigma S\frac{\partial C}{\partial S}dW+\frac{1}{2}\sigma^2S^2\frac{\partial^2C}{\partial S^2}dt$$\
 Or, grouping the $dt$ terms:\
-$$dC=(\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}+\frac{1}{2}\sigma^2S^2\frac{\partial^2 C}{\partial S^2})\space dt+\sigma S\frac{\partial C}{\partial S} dW$$\
+$$dC=(\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}+\frac{1}{2}\sigma^2S^2\frac{\partial^2 C}{\partial S^2})\space dt+\sigma S\frac{\partial C}{\partial S} dW$$
 
 3. **Build a Riskless Portfolio (Delta Hedging)**
 
