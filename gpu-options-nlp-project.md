@@ -88,7 +88,37 @@ $$\frac{\partial C}{\partial t}+rS\frac{\partial C}{\partial S}+\frac{1}{2}\sigm
 - $\sigma$: constant volatility
 
 In layman terms, since the absolute growth of this option price should be equal to the risk free rate $\times$ price of option (no arbitrage rule), the $dt$ terms equal to $rC$.
+
+5. **Solution: The Black-Scholes Formula**
+
+Solving this PDE with the right boundary conditions (option payoff at expiry) gives the famous Black-Scholes formula for European options (options that can only be exercised at expiry).
+
+The boundary conditions for calls and puts respectively are as follows:
+- Call: $C(S,T)=max(S-K,0)$
+- Put: $P(S,T)=max(K-S,0)$
+
+where:
+- $S$: underlying asset price at expiry
+- $K$: strike price
+
 ### Heston Monte Carlo: Stochastic volatility simulation with Milstein discretization and variance reduction
+
+The **Heston model** is a popular stochastic volatility model that simulates both the asset price and its volatility as random processes. Unlike the Black-Scholes model with constant volatility, the Heston model captures realistic market features like volatility clustering and the volatility smile.
+
+Recap that the Black-Scholes model assumes the asset price $S_t$ follows a geometric Brownian motion with **constant volatility**: $$dS_T=\mu S_tdt+\sigma S_tdW_t$$
+But the Heston Model extends Black-Scholes by making volatility itself random and time-varying. It introduces a second SDE and for the variane $v_t$ (where volatility is $\sqrt{v_t}$):
+$$dS_t=\mu S_t\space dt+\sqrt{v_t}S_t\space dW^S_t$$
+$$dv_t=\kappa(\theta -v_t)\space dt+\xi\sqrt{v_t}\space dW^v_t$$
+- $v_t$: instantaneous variance (volatility squared)
+- $\kappa$: rate of mean reversion (how quickly variance returns to its long-term average)
+- $\theta$: long-term average variane
+- $\kappa$: volatility of volatility ("vol of vol")
+- $dW^S_t, dW^v_t$: two Brownian motions, correlated with coefficient $\rho$
+Key features:
+- Volatility is not constant; it evolves randomly over time.
+- Variance $v_t$ mean-reverts to $\theta$ at rate $\kappa$.
+- The volatility process is modeled as a **Cox-Ingersoll-Ross (CIR) process** (the square-root term ensures variance stays non-negative).
+- The two sources of randomness (price and volatility) can be correlated, capturing market phenomena like the leverage effect.
 
 ### Finite Differences: Crank-Nicolson PDE solver for American options and complex boundary conditions
 
