@@ -26,8 +26,8 @@ Understanding this requires several underlying concepts.
 
 1. **Geometric Brownian motion**
 
-The classic Black-Scholes model assumes:\
-$$dS_t=\mu S_tdt + \sigma S_tdW_t$$\
+The classic Black-Scholes model assumes:
+$$dS_t=\mu S_tdt + \sigma S_tdW_t$$
 where:
 - $dS_t$: instantaneous change in price at time $t$
 - $S_t$: asset price at time $t$
@@ -42,8 +42,8 @@ Breaking down the SDE:
 
 2. **Itô's Lemma: The Chain Rule for Stochastic Processes**
 
-For a function $C(S,t)$, it says:\
-$$dC=\frac{\partial C}{\partial t}dt+\frac{\partial C}{\partial S}dS+\frac{1}{2}\frac{\partial^2C}{\partial S^2}(dS)^2$$\
+For a function $C(S,t)$, it says:
+$$dC=\frac{\partial C}{\partial t}dt+\frac{\partial C}{\partial S}dS+\frac{1}{2}\frac{\partial^2C}{\partial S^2}(dS)^2$$
 where:
 - The first term is the change due to time.
 - The second term is the change due to asset movement.
@@ -66,11 +66,11 @@ So:
 
 Therefore: $(dS)^2=\sigma^2S^2dt$
 
-Now, the third term becomes:\
-$$\frac{1}{2}\frac{\partial^2C}{\partial S^2}(dS)^2=\frac{1}{2}\frac{\partial^2C}{\partial S^2}\sigma^2S^2dt$$\
-So the full expansion is:\
-$$dC=\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}dt+\sigma S\frac{\partial C}{\partial S}dW+\frac{1}{2}\sigma^2S^2\frac{\partial^2C}{\partial S^2}dt$$\
-Or, grouping the $dt$ terms:\
+Now, the third term becomes:
+$$\frac{1}{2}\frac{\partial^2C}{\partial S^2}(dS)^2=\frac{1}{2}\frac{\partial^2C}{\partial S^2}\sigma^2S^2dt$$
+So the full expansion is:
+$$dC=\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}dt+\sigma S\frac{\partial C}{\partial S}dW+\frac{1}{2}\sigma^2S^2\frac{\partial^2C}{\partial S^2}dt$$
+Or, grouping the $dt$ terms:
 $$dC=(\frac{\partial C}{\partial t}+\mu S\frac{\partial C}{\partial S}+\frac{1}{2}\sigma^2S^2\frac{\partial^2 C}{\partial S^2})\space dt+\sigma S\frac{\partial C}{\partial S} dW$$
 
 3. **Build a Riskless Portfolio (Delta Hedging)**
