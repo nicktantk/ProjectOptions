@@ -27,9 +27,7 @@ Understanding this requires several underlying concepts.
 1. **Geometric Brownian motion**
 
 The classic Black-Scholes model assumes:
-$$
-dS_t=\mu S_tdt + \sigma S_tdW_t
-$$
+$$dS_t=\mu S_tdt + \sigma S_tdW_t$$
 where:
 - $dS_t$: instantaneous change in price at time $t$
 - $S_t$: asset price at time $t$
